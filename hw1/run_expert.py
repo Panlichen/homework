@@ -49,15 +49,18 @@ def main():
             totalr = 0.
             steps = 0
             while not done:
-                action = policy_fn(obs[None,:])
-                observations.append(obs)
+                action = policy_fn(obs[None,:]) # 从加载的policy中读ob对应的action
+                observations.append(obs) # 这行和下一行只是为了记录
                 actions.append(action)
-                obs, r, done, _ = env.step(action)
+                obs, r, done, _ = env.step(action) # 在起来的环境中运行action，会得到新的ob
                 totalr += r
                 steps += 1
                 if args.render:
                     env.render()
-                if steps % 100 == 0: print("%i/%i"%(steps, max_steps))
+                if steps % 100 == 0: 
+                    print("%i/%i"%(steps, max_steps))
+                    # print(actions)
+                    # print(obs)
                 if steps >= max_steps:
                     break
             returns.append(totalr)
@@ -66,11 +69,11 @@ def main():
         print('mean return', np.mean(returns))
         print('std of return', np.std(returns))
 
-        expert_data = {'observations': np.array(observations),
-                       'actions': np.array(actions)}
+        # expert_data = {'observations': np.array(observations),
+        #                'actions': np.array(actions)}
 
-        with open(os.path.join('expert_data', args.envname + '.pkl'), 'wb') as f:
-            pickle.dump(expert_data, f, pickle.HIGHEST_PROTOCOL)
+        # with open(os.path.join('expert_data', args.envname + '.pkl'), 'wb') as f:
+        #     pickle.dump(expert_data, f, pickle.HIGHEST_PROTOCOL)
 
 if __name__ == '__main__':
     main()
