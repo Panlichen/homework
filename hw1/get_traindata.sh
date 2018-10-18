@@ -1,0 +1,1 @@
+python run_expert.py experts/$1.pkl $1 --render --num_rollouts=5
