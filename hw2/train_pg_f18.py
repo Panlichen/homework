@@ -20,16 +20,16 @@ from multiprocessing import Process
 #========================================================================================#
 #                           ----------PROBLEM 2----------
 #========================================================================================#  
-def build_mlp(input_placeholder, output_size, scope, n_layers, size, activation=tf.tanh, output_activation=None):
+def build_mlp(input_placeholder, output_shape, scope, n_layers, shape, activation=tf.tanh, output_activation=None):
     """
         Builds a feedforward neural network(maybe mlp for multi layer proceptron)
         
         arguments:
-            input_placeholder: placeholder variable for the state (batch_size, input_size)
-            output_size: size of the output layer
+            input_placeholder: placeholder variable for the state (batch_shape, input_shape)
+            output_shape: shape of the output layer
             scope: variable scope of the network
             n_layers: number of hidden layers
-            size: dimension of the hidden layer
+            shape: dimension of the hidden layer
             activation: activation of the hidden layers
             output_activation: activation of the ouput layers
 
@@ -43,8 +43,8 @@ def build_mlp(input_placeholder, output_size, scope, n_layers, size, activation=
     with tf.variable_scope(scope):
         layer = input_placeholder
         for _ in range(n_layers):
-            layer = tf.layers.dense(layer, size, activation=activation, )
-        output_placeholder = tf.layers.dense(layer, output_size, activation=output_activation, )
+            layer = tf.layers.dense(layer, shape, activation=activation, )
+        output_placeholder = tf.layers.dense(layer, output_shape, activation=output_activation, )
     return output_placeholder
 
 def pathlength(path):
@@ -68,7 +68,7 @@ class Agent(object):
         self.ob_dim = computation_graph_args['ob_dim']
         self.ac_dim = computation_graph_args['ac_dim']
         self.discrete = computation_graph_args['discrete']
-        self.size = computation_graph_args['size']
+        self.shape = computation_graph_args['shape']
         self.n_layers = computation_graph_args['n_layers']
         self.learning_rate = computation_graph_args['learning_rate']
 
@@ -122,36 +122,36 @@ class Agent(object):
             which are the parameters of the policy distribution p(a|s)
 
             arguments:
-                sy_ob_no: (batch_size, self.ob_dim)
+                sy_ob_no: (batch_shape, self.ob_dim)
 
             returns:
                 the parameters of the policy.
 
                 if discrete, the parameters are the logits of a categorical distribution
                     over the actions
-                    sy_logits_na: (batch_size, self.ac_dim)
+                    sy_logits_na: (batch_shape, self.ac_dim)
 
                 if continuous, the parameters are a tuple (mean, log_std) of a Gaussian
                     distribution over actions. log_std should just be a trainable
                     variable, not a network output.
-                    sy_mean: (batch_size, self.ac_dim)
+                    sy_mean: (batch_shape, self.ac_dim)
                     sy_logstd: (self.ac_dim,)
 
             Hint: use the 'build_mlp' function to output the logits (in the discrete case)
                 and the mean (in the continuous case).
                 Pass in self.n_layers for the 'n_layers' argument, and
-                pass in self.size for the 'size' argument.
+                pass in self.shape for the 'shape' argument.
         """
         # raise NotImplementedError
         if self.discrete:
             # YOUR_CODE_HERE
             sy_logits_na = build_mlp(sy_ob_no, self.ac_dim, "discrete", \
-                self.n_layers, self.size)
+                self.n_layers, self.shape)
             return sy_logits_na
         else:
             # YOUR_CODE_HERE
             sy_mean = build_mlp(sy_ob_no, self.ac_dim, "continuous", \
-                self.n_layers, self.size)
+                self.n_layers, self.shape)
             sy_logstd = tf.get_variable("std", [self.ac_dim], dtype=tf.float32) \
                 # logstd should just be a trainable variable, not a network output.
             return (sy_mean, sy_logstd)
@@ -166,15 +166,15 @@ class Agent(object):
             arguments:
                 policy_parameters
                     if discrete: logits of a categorical distribution over actions 
-                        sy_logits_na: (batch_size, self.ac_dim)
+                        sy_logits_na: (batch_shape, self.ac_dim)
                     if continuous: (mean, log_std) of a Gaussian distribution over actions
-                        sy_mean: (batch_size, self.ac_dim)
+                        sy_mean: (batch_shape, self.ac_dim)
                         sy_logstd: (self.ac_dim,)
 
             returns:
                 sy_sampled_ac: 
-                    if discrete: (batch_size,)
-                    if continuous: (batch_size, self.ac_dim)
+                    if discrete: (batch_shape,)
+                    if continuous: (batch_shape, self.ac_dim)
 
             Hint: for the continuous case, use the reparameterization trick:
                  The output from a Gaussian distribution with mean 'mu' and std 'sigma' is
@@ -185,9 +185,9 @@ class Agent(object):
         """
         # raise NotImplementedError
         if self.discrete:
-            sy_logits_na = policy_parameters
+            self.sy_logits_na = policy_parameters
             # YOUR_CODE_HERE
-            sy_sampled_ac = tf.reshape(tf.multinomial(sy_logits_na, 1), [-1])
+            sy_sampled_ac = tf.reshape(tf.multinomial(self.sy_logits_na, 1), [-1])
         else:
             sy_mean, sy_logstd = policy_parameters
             # YOUR_CODE_HERE
@@ -205,17 +205,17 @@ class Agent(object):
             arguments:
                 policy_parameters
                     if discrete: logits of a categorical distribution over actions 
-                        sy_logits_na: (batch_size, self.ac_dim)
+                        sy_logits_na: (batch_shape, self.ac_dim)
                     if continuous: (mean, log_std) of a Gaussian distribution over actions
-                        sy_mean: (batch_size, self.ac_dim)
+                        sy_mean: (batch_shape, self.ac_dim)
                         sy_logstd: (self.ac_dim,)
 
                 sy_ac_na: 
-                    if discrete: (batch_size,)
-                    if continuous: (batch_size, self.ac_dim)
+                    if discrete: (batch_shape,)
+                    if continuous: (batch_shape, self.ac_dim)
 
             returns:
-                sy_logprob_n: (batch_size)
+                sy_logprob_n: (batch_shape)
 
             Hint:
                 For the discrete case, use the log probability under a categorical distribution.
@@ -244,11 +244,11 @@ class Agent(object):
             Prefixes and suffixes:
             ob - observation 
             ac - action
-            _no - this tensor should have shape (batch self.size /n/, observation dim)
-            _na - this tensor should have shape (batch self.size /n/, action dim)
-            _n  - this tensor should have shape (batch self.size /n/)
+            _no - this tensor should have shape (batch self.shape /n/, observation dim)
+            _na - this tensor should have shape (batch self.shape /n/, action dim)
+            _n  - this tensor should have shape (batch self.shape /n/)
             
-            Note: batch self.size /n/ is defined at runtime, and until then, the shape for that axis
+            Note: batch self.shape /n/ is defined at runtime, and until then, the shape for that axis
             is None
 
             ----------------------------------------------------------------------------------
@@ -291,7 +291,7 @@ class Agent(object):
                                     1, 
                                     "nn_baseline",
                                     n_layers=self.n_layers,
-                                    size=self.size))
+                                    shape=self.shape))
             # YOUR_CODE_HERE
             self.sy_target_n = tf.placeholder(shape=[None], name="baseline", dtype=tf.float32)
             baseline_loss = tf.nn.l2_loss(self.baseline_prediction - self.sy_target_n)
@@ -327,10 +327,18 @@ class Agent(object):
             """
             这个应该是tf中调用计算图的方法
             """
+            if self.discrete:
+                logits = self.sess.run(self.sy_logits_na, feed_dict={self.sy_ob_no: ob[None]})
+                # print("THE LOGITS", logits, tf.shape(logits))
             ac = self.sess.run(self.sy_sampled_ac, feed_dict={self.sy_ob_no: ob[None]}) 
             ac = ac[0]
             acs.append(ac)
             ob, rew, done, _ = env.step(ac)
+            # print("####################################")
+            # print("self.ac_dims", self.ac_dim)
+            # print("smaple_jrajectory, ob", ob, ob.shape, type(ob))
+            # print("ac", ac, ac.shape, type(ac))
+            # os._exit()
             rewards.append(rew)
             steps += 1
             if done or steps > self.max_path_length:
@@ -338,6 +346,7 @@ class Agent(object):
         path = {"observation" : np.array(obs, dtype=np.float32), 
                 "reward" : np.array(rewards, dtype=np.float32), 
                 "action" : np.array(acs, dtype=np.float32)}
+        # print('sample_trajectory path[\'action\']', path['action'], path['action'].shape)
         return path
 
     #====================================================================================#
@@ -424,6 +433,8 @@ class Agent(object):
                 len_re = len(re)
                 q = [np.sum(np.power(self.gamma, np.arange(len_re)) * re) for t in range(len_re)]
                 q_n.extend(q)
+        # print("monte_carlo ts_re_n", re_n)
+        # print("monte_carlo q_n", q_n)
         return q_n
 
     def compute_advantage(self, ob_no, q_n):
@@ -456,7 +467,9 @@ class Agent(object):
             # (mean and std) of the current batch of Q-values. (Goes with Hint
             # #bl2 in Agent.update_parameters.
             # raise NotImplementedError
-            b_n = self.sess.run(self.baseline_prediction, feed_dict={self.sy_ob_no: ob_no[None]}) # YOUR CODE HERE
+            b_n = self.sess.run(self.baseline_prediction, feed_dict={self.sy_ob_no: ob_no}) # YOUR CODE HERE
+            # print("in compute_advantange, ob_no shape", ob_no.shape)
+            # print("in compute_advantange, b_n shape", b_n.shape)
             b_n = b_n * np.std(q_n, axis=0) + np.mean(q_n, axis=0)
             adv_n = q_n - b_n
         else:
@@ -568,7 +581,7 @@ def train_PG(
         nn_baseline, 
         seed,
         n_layers,
-        size):
+        shape):
 
     start = time.time()
 
@@ -596,7 +609,7 @@ def train_PG(
     # Is this env continuous, or self.discrete?
     discrete = isinstance(env.action_space, gym.spaces.Discrete)
 
-    # Observation and action sizes
+    # Observation and action shapes
     ob_dim = env.observation_space.shape[0]
     ac_dim = env.action_space.n if discrete else env.action_space.shape[0]
 
@@ -608,7 +621,7 @@ def train_PG(
         'ob_dim': ob_dim,
         'ac_dim': ac_dim,
         'discrete': discrete,
-        'size': size,
+        'shape': shape,
         'learning_rate': learning_rate,
         }
 
@@ -648,23 +661,27 @@ def train_PG(
         ob_no = np.concatenate([path["observation"] for path in paths])
         ac_na = np.concatenate([path["action"] for path in paths])
         re_n = [path["reward"] for path in paths]
+        # print("ob_no", ob_no.shape)
+        # print("ac_na", ac_na.shape)
+        # print("re_n", len(re_n))
 
         q_n, adv_n = agent.estimate_return(ob_no, re_n)
         agent.update_parameters(ob_no, ac_na, q_n, adv_n)
-
+        
+        # os._exit(1)
         # Log diagnostics
         returns = [path["reward"].sum() for path in paths]
         ep_lengths = [pathlength(path) for path in paths]
-        logz.log_tabular("Time", time.time() - start)
-        logz.log_tabular("Iteration", itr)
-        logz.log_tabular("AverageReturn", np.mean(returns))
+        # logz.log_tabular("Time", time.time() - start)
+        # logz.log_tabular("Iteration", itr)
+        # logz.log_tabular("AverageReturn", np.mean(returns))
         logz.log_tabular("StdReturn", np.std(returns))
-        logz.log_tabular("MaxReturn", np.max(returns))
-        logz.log_tabular("MinReturn", np.min(returns))
+        # logz.log_tabular("MaxReturn", np.max(returns))
+        # logz.log_tabular("MinReturn", np.min(returns))
         logz.log_tabular("EpLenMean", np.mean(ep_lengths))
-        logz.log_tabular("EpLenStd", np.std(ep_lengths))
-        logz.log_tabular("TimestepsThisBatch", timesteps_this_batch)
-        logz.log_tabular("TimestepsSoFar", total_timesteps)
+        # logz.log_tabular("EpLenStd", np.std(ep_lengths))
+        # logz.log_tabular("TimestepsThisBatch", timesteps_this_batch)
+        # logz.log_tabular("TimestepsSoFar", total_timesteps)
         logz.dump_tabular()
         logz.pickle_tf_vars()
 
@@ -677,7 +694,7 @@ def main():
     parser.add_argument('--render', action='store_true')
     parser.add_argument('--discount', type=float, default=1.0)
     parser.add_argument('--n_iter', '-n', type=int, default=100)
-    parser.add_argument('--batch_size', '-b', type=int, default=1000)
+    parser.add_argument('--batch_shape', '-b', type=int, default=1000)
     parser.add_argument('--ep_len', '-ep', type=float, default=-1.)
     parser.add_argument('--learning_rate', '-lr', type=float, default=5e-3)
     parser.add_argument('--reward_to_go', '-rtg', action='store_true')
@@ -686,7 +703,7 @@ def main():
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--n_experiments', '-e', type=int, default=1)
     parser.add_argument('--n_layers', '-l', type=int, default=2)
-    parser.add_argument('--size', '-s', type=int, default=64)
+    parser.add_argument('--shape', '-s', type=int, default=64)
     args = parser.parse_args()
 
     if not(os.path.exists('data')):
@@ -710,7 +727,7 @@ def main():
                 env_name=args.env_name,
                 n_iter=args.n_iter,
                 gamma=args.discount,
-                min_timesteps_per_batch=args.batch_size,
+                min_timesteps_per_batch=args.batch_shape,
                 max_path_length=max_path_length,
                 learning_rate=args.learning_rate,
                 reward_to_go=args.reward_to_go,
@@ -720,7 +737,7 @@ def main():
                 nn_baseline=args.nn_baseline, 
                 seed=seed,
                 n_layers=args.n_layers,
-                size=args.size
+                shape=args.shape
                 )
         # # Awkward hacky process runs, because Tensorflow does not like
         # # repeatedly calling train_PG in the same thread.

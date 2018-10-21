@@ -1,0 +1,371 @@
+INFO:root:Application Started
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.67ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.52ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.84ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.38ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.37ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.39ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.40ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.41ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 10.58ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.47ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.55ms
+INFO:tornado.access:200 GET / (127.0.0.1) 13.19ms
+INFO:tornado.access:200 GET /static/js/bootstrap.min.js?v=5869c96cc8f19086aee625d670d741f9 (127.0.0.1) 8.56ms
+INFO:tornado.access:200 GET /static/css/react-resizable-styles.css?v=9f91a8dbf4d8f7ef1399e625660405f4 (127.0.0.1) 6.59ms
+INFO:tornado.access:200 GET /static/css/react-grid-layout-styles.css?v=7dc8934d2f9ac5303b8f0bb1148152a0 (127.0.0.1) 5.93ms
+INFO:tornado.access:200 GET /static/js/react-react.min.js?v=bca103da5b5404d93783ccf73e0e9d1e (127.0.0.1) 3.66ms
+INFO:tornado.access:200 GET /static/css/bootstrap.min.css?v=ec3bb52a00e176a7181d454dffaea219 (127.0.0.1) 17.71ms
+INFO:tornado.access:200 GET /static/js/jquery.min.js?v=e071abda8fe61194711cfc2ab99fe104 (127.0.0.1) 12.78ms
+INFO:tornado.access:200 GET /static/fonts/layout_bin_packer?v=6c46683ed70fbb1443caf3531243836d (127.0.0.1) 10.27ms
+INFO:tornado.access:200 GET /static/js/mathjax-MathJax.js?v=49565b9ce89c64da075a5a39969b366e (127.0.0.1) 3.83ms
+INFO:tornado.access:200 GET /static/css/style.css?v=61ce84007d9040f654acf9a7be6c3ea8 (127.0.0.1) 2.13ms
+INFO:tornado.access:200 GET /static/js/react-dom.min.js?v=950495cc51ccb90612cf0fe0bb44f8f3 (127.0.0.1) 12.63ms
+INFO:tornado.access:200 GET /static/js/main.js?v=a8b2ac5e05493fc00a903692a57a713f (127.0.0.1) 6.35ms
+INFO:tornado.access:200 GET /static/js/plotly-plotly.min.js?v=50e611134729dba4641ef096bc6949ef (127.0.0.1) 12.07ms
+INFO:tornado.access:200 GET /favicon.png (127.0.0.1) 2.47ms
+INFO:tornado.access:200 GET /static/fonts/glyphicons-halflings-regular.woff2 (127.0.0.1) 0.85ms
+INFO:tornado.access:101 GET /socket (127.0.0.1) 0.53ms
+INFO:root:Opened new socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /env/main (127.0.0.1) 0.65ms
+INFO:tornado.access:200 POST /env/main (127.0.0.1) 0.77ms
+INFO:tornado.access:200 GET /extensions/MathMenu.js?V=2.7.1 (127.0.0.1) 2.51ms
+INFO:tornado.access:200 GET /extensions/MathZoom.js?V=2.7.1 (127.0.0.1) 2.68ms
+INFO:root:comparing envs
+INFO:tornado.access:200 POST /compare/main+test1 (127.0.0.1) 1.07ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.82ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.42ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.54ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 1.41ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.67ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.42ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.98ms
+INFO:tornado.access:200 POST /env/test2 (127.0.0.1) 0.52ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.43ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:root:comparing envs
+INFO:tornado.access:200 POST /compare/test1+test2 (127.0.0.1) 1.75ms
+INFO:tornado.access:200 POST /env/test2 (127.0.0.1) 0.41ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.33ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.71ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 1.21ms
+INFO:root:comparing envs
+INFO:tornado.access:200 POST /compare/test1+test2 (127.0.0.1) 2.17ms
+INFO:tornado.access:200 POST /env/test2 (127.0.0.1) 0.57ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.30ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.80ms
+INFO:tornado.access:200 GET / (127.0.0.1) 2.41ms
+INFO:tornado.access:304 GET /static/css/bootstrap.min.css?v=ec3bb52a00e176a7181d454dffaea219 (127.0.0.1) 0.54ms
+INFO:tornado.access:304 GET /static/js/bootstrap.min.js?v=5869c96cc8f19086aee625d670d741f9 (127.0.0.1) 0.44ms
+INFO:tornado.access:304 GET /static/css/react-resizable-styles.css?v=9f91a8dbf4d8f7ef1399e625660405f4 (127.0.0.1) 0.39ms
+INFO:tornado.access:304 GET /static/css/react-grid-layout-styles.css?v=7dc8934d2f9ac5303b8f0bb1148152a0 (127.0.0.1) 0.40ms
+INFO:tornado.access:304 GET /static/js/react-react.min.js?v=bca103da5b5404d93783ccf73e0e9d1e (127.0.0.1) 0.56ms
+INFO:tornado.access:304 GET /static/js/jquery.min.js?v=e071abda8fe61194711cfc2ab99fe104 (127.0.0.1) 0.39ms
+INFO:tornado.access:304 GET /static/fonts/layout_bin_packer?v=6c46683ed70fbb1443caf3531243836d (127.0.0.1) 0.38ms
+INFO:tornado.access:304 GET /static/js/mathjax-MathJax.js?v=49565b9ce89c64da075a5a39969b366e (127.0.0.1) 0.39ms
+INFO:tornado.access:304 GET /static/js/plotly-plotly.min.js?v=50e611134729dba4641ef096bc6949ef (127.0.0.1) 0.41ms
+INFO:tornado.access:304 GET /static/js/main.js?v=a8b2ac5e05493fc00a903692a57a713f (127.0.0.1) 0.47ms
+INFO:tornado.access:304 GET /static/js/react-dom.min.js?v=950495cc51ccb90612cf0fe0bb44f8f3 (127.0.0.1) 0.44ms
+INFO:tornado.access:200 GET /static/css/style.css?v=61ce84007d9040f654acf9a7be6c3ea8 (127.0.0.1) 0.70ms
+INFO:tornado.access:101 GET /socket (127.0.0.1) 0.54ms
+INFO:root:Opened new socket from ip: 127.0.0.1
+WARNING:tornado.access:404 GET /favicon.ico (127.0.0.1) 0.45ms
+WARNING:tornado.access:404 GET /favicon.ico (127.0.0.1) 0.42ms
+INFO:root:comparing envs
+INFO:tornado.access:200 POST /compare/test1+test2 (127.0.0.1) 1.77ms
+INFO:root:comparing envs
+INFO:tornado.access:200 POST /compare/test1+test2 (127.0.0.1) 1.75ms
+INFO:tornado.access:200 GET /extensions/MathMenu.js?V=2.7.1 (127.0.0.1) 2.43ms
+INFO:tornado.access:200 GET /extensions/MathZoom.js?V=2.7.1 (127.0.0.1) 2.36ms
+INFO:tornado.access:200 POST /env/test2 (127.0.0.1) 0.96ms
+Traceback (most recent call last):
+  File "/home/mlcp/anaconda3/lib/python3.6/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/home/mlcp/anaconda3/lib/python3.6/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/visdom/server.py", line 1184, in <module>
+    download_scripts_and_run()
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/visdom/server.py", line 1179, in download_scripts_and_run
+    download_scripts()
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/visdom/server.py", line 1093, in download_scripts
+    data = opener.open(req).read()
+  File "/home/mlcp/anaconda3/lib/python3.6/urllib/request.py", line 526, in open
+    response = self._open(req, data)
+  File "/home/mlcp/anaconda3/lib/python3.6/urllib/request.py", line 544, in _open
+    '_open', req)
+  File "/home/mlcp/anaconda3/lib/python3.6/urllib/request.py", line 504, in _call_chain
+    result = func(*args)
+  File "/home/mlcp/anaconda3/lib/python3.6/urllib/request.py", line 1361, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "/home/mlcp/anaconda3/lib/python3.6/urllib/request.py", line 1321, in do_open
+    r = h.getresponse()
+  File "/home/mlcp/anaconda3/lib/python3.6/http/client.py", line 1331, in getresponse
+    response.begin()
+  File "/home/mlcp/anaconda3/lib/python3.6/http/client.py", line 297, in begin
+    version, status, reason = self._read_status()
+  File "/home/mlcp/anaconda3/lib/python3.6/http/client.py", line 258, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/home/mlcp/anaconda3/lib/python3.6/socket.py", line 586, in readinto
+    return self._sock.recv_into(b)
+  File "/home/mlcp/anaconda3/lib/python3.6/ssl.py", line 1009, in recv_into
+    return self.read(nbytes, buffer)
+  File "/home/mlcp/anaconda3/lib/python3.6/ssl.py", line 871, in read
+    return self._sslobj.read(len, buffer)
+  File "/home/mlcp/anaconda3/lib/python3.6/ssl.py", line 631, in read
+    v = self._sslobj.read(len, buffer)
+KeyboardInterrupt
+Downloading scripts. It might take a while.
+INFO:root:Application Started
+Traceback (most recent call last):
+  File "/home/mlcp/anaconda3/lib/python3.6/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/home/mlcp/anaconda3/lib/python3.6/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/visdom/server.py", line 1184, in <module>
+    download_scripts_and_run()
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/visdom/server.py", line 1180, in download_scripts_and_run
+    main()
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/visdom/server.py", line 1175, in main
+    print_func=print_func, user_credential=user_credential)
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/visdom/server.py", line 1113, in start_server
+    app.listen(port, max_buffer_size=1024 ** 3)
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/tornado/web.py", line 1986, in listen
+    server.listen(port, address)
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/tornado/tcpserver.py", line 144, in listen
+    sockets = bind_sockets(port, address=address)
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/tornado/netutil.py", line 163, in bind_sockets
+    sock.bind(sockaddr)
+OSError: [Errno 98] Address already in use
+Downloading scripts. It might take a while.
+It's Alive!
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 1.27ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.66ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 1.04ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.61ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.68ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.96ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.86ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.85ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.58ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 1.03ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.85ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.56ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.72ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.63ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.54ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.77ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 1.01ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.92ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 1.13ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.58ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.61ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.69ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.71ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.58ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.62ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.58ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.49ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.81ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.61ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.58ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.92ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.61ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.56ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.69ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 1.06ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.57ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 1.20ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.64ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.53ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.69ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.68ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.75ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.86ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.61ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.65ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.74ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.64ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.54ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.69ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 1.16ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.57ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.63ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 1.02ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.67ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.74ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.88ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.54ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.68ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.60ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.59ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.85ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.55ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.48ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.79ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.67ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.55ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.94ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.58ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.51ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.72ms
+INFO:root:Application Started
+Traceback (most recent call last):
+  File "/home/mlcp/anaconda3/lib/python3.6/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/home/mlcp/anaconda3/lib/python3.6/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/visdom/server.py", line 1184, in <module>
+    download_scripts_and_run()
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/visdom/server.py", line 1180, in download_scripts_and_run
+    main()
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/visdom/server.py", line 1175, in main
+    print_func=print_func, user_credential=user_credential)
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/visdom/server.py", line 1123, in start_server
+    ioloop.IOLoop.instance().start()
+  File "/home/mlcp/anaconda3/lib/python3.6/site-packages/tornado/platform/asyncio.py", line 127, in start
+    self.asyncio_loop.run_forever()
+  File "/home/mlcp/anaconda3/lib/python3.6/asyncio/base_events.py", line 422, in run_forever
+    self._run_once()
+  File "/home/mlcp/anaconda3/lib/python3.6/asyncio/base_events.py", line 1396, in _run_once
+    event_list = self._selector.select(timeout)
+  File "/home/mlcp/anaconda3/lib/python3.6/selectors.py", line 445, in select
+    fd_event_list = self._epoll.poll(timeout, max_ev)
+KeyboardInterrupt
+Downloading scripts. It might take a while.
+It's Alive!
+You can navigate to http://localhost:8097
+INFO:root:Application Started
+INFO:tornado.access:200 GET / (127.0.0.1) 8.75ms
+INFO:tornado.access:304 GET /static/css/bootstrap.min.css?v=ec3bb52a00e176a7181d454dffaea219 (127.0.0.1) 3.83ms
+INFO:tornado.access:304 GET /static/js/jquery.min.js?v=e071abda8fe61194711cfc2ab99fe104 (127.0.0.1) 1.62ms
+INFO:tornado.access:304 GET /static/js/bootstrap.min.js?v=5869c96cc8f19086aee625d670d741f9 (127.0.0.1) 0.64ms
+INFO:tornado.access:304 GET /static/css/react-resizable-styles.css?v=9f91a8dbf4d8f7ef1399e625660405f4 (127.0.0.1) 0.51ms
+INFO:tornado.access:304 GET /static/js/react-dom.min.js?v=950495cc51ccb90612cf0fe0bb44f8f3 (127.0.0.1) 0.71ms
+INFO:tornado.access:304 GET /static/fonts/layout_bin_packer?v=6c46683ed70fbb1443caf3531243836d (127.0.0.1) 0.48ms
+INFO:tornado.access:304 GET /static/css/react-grid-layout-styles.css?v=7dc8934d2f9ac5303b8f0bb1148152a0 (127.0.0.1) 0.48ms
+INFO:tornado.access:304 GET /static/js/mathjax-MathJax.js?v=49565b9ce89c64da075a5a39969b366e (127.0.0.1) 0.51ms
+INFO:tornado.access:304 GET /static/js/plotly-plotly.min.js?v=50e611134729dba4641ef096bc6949ef (127.0.0.1) 0.45ms
+INFO:tornado.access:304 GET /static/js/main.js?v=a8b2ac5e05493fc00a903692a57a713f (127.0.0.1) 0.40ms
+INFO:tornado.access:304 GET /static/css/style.css?v=61ce84007d9040f654acf9a7be6c3ea8 (127.0.0.1) 0.40ms
+INFO:tornado.access:304 GET /static/js/react-react.min.js?v=bca103da5b5404d93783ccf73e0e9d1e (127.0.0.1) 0.42ms
+INFO:tornado.access:101 GET /socket (127.0.0.1) 0.48ms
+INFO:root:Opened new socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /env/test3 (127.0.0.1) 0.60ms
+INFO:tornado.access:200 POST /env/test3 (127.0.0.1) 0.52ms
+INFO:tornado.access:304 GET / (127.0.0.1) 2.49ms
+INFO:tornado.access:304 GET /static/css/bootstrap.min.css?v=ec3bb52a00e176a7181d454dffaea219 (127.0.0.1) 0.52ms
+INFO:tornado.access:304 GET /static/js/react-react.min.js?v=bca103da5b5404d93783ccf73e0e9d1e (127.0.0.1) 0.49ms
+INFO:tornado.access:304 GET /static/fonts/layout_bin_packer?v=6c46683ed70fbb1443caf3531243836d (127.0.0.1) 0.50ms
+INFO:tornado.access:304 GET /static/js/jquery.min.js?v=e071abda8fe61194711cfc2ab99fe104 (127.0.0.1) 0.42ms
+INFO:tornado.access:304 GET /static/js/bootstrap.min.js?v=5869c96cc8f19086aee625d670d741f9 (127.0.0.1) 0.42ms
+INFO:tornado.access:304 GET /static/css/react-resizable-styles.css?v=9f91a8dbf4d8f7ef1399e625660405f4 (127.0.0.1) 0.41ms
+INFO:tornado.access:304 GET /static/css/react-grid-layout-styles.css?v=7dc8934d2f9ac5303b8f0bb1148152a0 (127.0.0.1) 0.43ms
+INFO:tornado.access:304 GET /static/js/react-dom.min.js?v=950495cc51ccb90612cf0fe0bb44f8f3 (127.0.0.1) 0.61ms
+INFO:tornado.access:304 GET /static/js/mathjax-MathJax.js?v=49565b9ce89c64da075a5a39969b366e (127.0.0.1) 0.42ms
+INFO:tornado.access:304 GET /static/js/plotly-plotly.min.js?v=50e611134729dba4641ef096bc6949ef (127.0.0.1) 0.60ms
+INFO:tornado.access:304 GET /static/js/main.js?v=a8b2ac5e05493fc00a903692a57a713f (127.0.0.1) 0.41ms
+INFO:tornado.access:304 GET /static/css/style.css?v=61ce84007d9040f654acf9a7be6c3ea8 (127.0.0.1) 0.42ms
+INFO:tornado.access:200 GET /extensions/MathMenu.js?V=2.7.1 (127.0.0.1) 2.41ms
+INFO:tornado.access:101 GET /socket (127.0.0.1) 0.56ms
+INFO:root:Opened new socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /env/test3 (127.0.0.1) 0.56ms
+INFO:tornado.access:200 POST /env/test3 (127.0.0.1) 0.51ms
+INFO:tornado.access:200 GET /extensions/MathZoom.js?V=2.7.1 (127.0.0.1) 2.32ms
+INFO:tornado.access:304 GET /extensions/MathMenu.js?V=2.7.1 (127.0.0.1) 2.40ms
+INFO:tornado.access:304 GET /extensions/MathZoom.js?V=2.7.1 (127.0.0.1) 2.54ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.80ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.33ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.46ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.37ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.39ms
+INFO:tornado.access:200 POST /env/test3 (127.0.0.1) 0.73ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.32ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 1.07ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 1.35ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 1.15ms
+INFO:root:comparing envs
+INFO:tornado.access:200 POST /compare/test1+test3 (127.0.0.1) 4.54ms
+INFO:tornado.access:200 POST /env/test3 (127.0.0.1) 0.53ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.31ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 1.05ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 1.10ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 1.02ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 1.63ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.37ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.32ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.70ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.61ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.60ms
+INFO:tornado.access:200 POST /env/test3 (127.0.0.1) 0.54ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.30ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.80ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.85ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.71ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.53ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.30ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.56ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.50ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.65ms
+INFO:tornado.access:200 POST /env/test3 (127.0.0.1) 0.38ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.32ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.78ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.64ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.59ms
+INFO:tornado.access:200 POST /env/test3 (127.0.0.1) 0.53ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.29ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.69ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.50ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.53ms
+INFO:tornado.access:200 POST /env/test1 (127.0.0.1) 0.51ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.37ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.73ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.78ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.77ms
+INFO:tornado.access:200 POST /env/test3 (127.0.0.1) 0.41ms
+INFO:tornado.access:101 GET /vis_socket (127.0.0.1) 0.28ms
+INFO:root:Opened visdom socket from ip: 127.0.0.1
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.52ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.43ms
+INFO:tornado.access:200 POST /events (127.0.0.1) 0.45ms
