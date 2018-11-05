@@ -672,16 +672,16 @@ def train_PG(
         # Log diagnostics
         returns = [path["reward"].sum() for path in paths]
         ep_lengths = [pathlength(path) for path in paths]
-        # logz.log_tabular("Time", time.time() - start)
-        # logz.log_tabular("Iteration", itr)
-        # logz.log_tabular("AverageReturn", np.mean(returns))
+        logz.log_tabular("Time", time.time() - start)
+        logz.log_tabular("Iteration", itr)
+        logz.log_tabular("AverageReturn", np.mean(returns))
         logz.log_tabular("StdReturn", np.std(returns))
-        # logz.log_tabular("MaxReturn", np.max(returns))
-        # logz.log_tabular("MinReturn", np.min(returns))
+        logz.log_tabular("MaxReturn", np.max(returns))
+        logz.log_tabular("MinReturn", np.min(returns))
         logz.log_tabular("EpLenMean", np.mean(ep_lengths))
-        # logz.log_tabular("EpLenStd", np.std(ep_lengths))
-        # logz.log_tabular("TimestepsThisBatch", timesteps_this_batch)
-        # logz.log_tabular("TimestepsSoFar", total_timesteps)
+        logz.log_tabular("EpLenStd", np.std(ep_lengths))
+        logz.log_tabular("TimestepsThisBatch", timesteps_this_batch)
+        logz.log_tabular("TimestepsSoFar", total_timesteps)
         logz.dump_tabular()
         logz.pickle_tf_vars()
 

@@ -64,9 +64,28 @@ class Agent(object):
         self.n_layers = args.n_layers
         self.hidden_shape = args.hidden_shape
         self.lr = args.learning_rate
-        self.ob_dims = env.observation_space.shape[0]
         self.discrete = isinstance(env.action_space, gym.spaces.Discrete)
-        self.ac_dims = env.action_space.n if self.discrete else env.action_space.shape[0]
+        self.gpu = args.gpu
+
+
+        # print(env.observation_space.shape)
+        # print(env.observation_space.shape[0])
+        # print(env.action_space)
+        # print(self.discrete)
+        # print(env.action_space.n if self.discrete else env.action_space.shape)
+        # print(env.action_space.n if self.discrete else env.action_space.shape[0])
+        # os._exit(1)
+
+
+        if args.envname == 'Copy-v0':
+            self.ob_dims = env.observation_space.shape
+            self.ac_dims = env.action_space.n if self.discrete else env.action_space.shape
+        elif args.envname == 'Zaxxon-v0' or args.envname == 'CarRacing-v0':
+            self.ob_dims = env.observation_space.shape[0] * env.observation_space.shape[1] * env.observation_space.shape[2]
+            self.ac_dims = env.action_space.n if self.discrete else env.action_space.shape[0]
+        else:
+            self.ob_dims = env.observation_space.shape[0]
+            self.ac_dims = env.action_space.n if self.discrete else env.action_space.shape[0]
         
         # sample args
         self.render = args.render
@@ -77,9 +96,14 @@ class Agent(object):
         self.gamma = args.discount
         self.causality = args.causality
         self.need_normalize_adv = not(args.dont_normalize_advantange)
+        self.gae = args.gae
+        self.lam = args.lam
 
         self.policy_nn = PolicyNet(self.n_layers, self.ob_dims, self.ac_dims, self.hidden_shape, self.discrete)
         self.value_nn = build_mlp(self.ob_dims, 1, self.n_layers, self.hidden_shape)
+        if self.gpu:
+            self.policy_nn = self.policy_nn.cuda()
+            self.value_nn = self.value_nn.cuda()
         params = list(self.policy_nn.parameters()) + list(self.value_nn.parameters())
         self.optimizer = optim.Adam(params, lr=self.lr)
 
@@ -91,6 +115,8 @@ class Agent(object):
         而连续的action，每一维对应一个动作，所有动作不互斥，计算每个动作的浮点值
         """
         ts_ob_no = t.from_numpy(ob_no).float()
+        if self.gpu:
+            ts_ob_no = ts_ob_no.cuda()
         if self.discrete:
             ts_logits_na = self.policy_nn(ts_ob_no)
             ts_prob_na = nn.functional.log_softmax(ts_logits_na, dim=-1).exp()
@@ -107,6 +133,8 @@ class Agent(object):
         else:
             ts_mean_na, ts_logstd_na = self.policy_nn(ts_ob_no)
             ts_sampled_ac = t.normal(ts_mean_na, ts_logstd_na)
+        if self.gpu:
+            ts_sampled_ac = ts_sampled_ac.cpu()
         return ts_sampled_ac.numpy()
         
 
@@ -118,7 +146,11 @@ class Agent(object):
             if render:
                 self.env.render()
                 time.sleep(0.1)
+            ob = ob.flatten()
             obs.append(ob)
+            # print(type(ob))
+            # print(t.tensor(ob).shape)
+            # os._exit(1)
             if DEBUG_POLICY:
                 print('ob',ob)
             
@@ -154,16 +186,16 @@ class Agent(object):
                 break
         return paths, steps_this_batch
     
-    def monte_carlo_q(self, ts_re_n):
+    def monte_carlo_q(self, re_n):
         q_n = []
         if self.causality:
-            for re in ts_re_n:
+            for re in re_n:
                 path_len = len(re)
                 gamma_power = t.pow(self.gamma, t.arange(path_len).float())
-                q_path= [t.sum(re[t:] * gamma_power[:path_len - 1 - t]) for t in range(path_len)]
+                q_path= [t.sum(re[i:] * gamma_power[:path_len - i]) for i in range(path_len)]
                 q_n.extend(q_path)
         else:
-            for re in ts_re_n:
+            for re in re_n:
                 path_len = len(re)
                 gamma_power = t.pow(self.gamma, t.arange(path_len).float())
                 q_path = t.full((path_len, ), t.sum(re * gamma_power))
@@ -174,6 +206,9 @@ class Agent(object):
         return t.tensor(q_n)
     
     def compute_advantage(self, ts_ob_no, ts_q_n):
+        if self.gpu:
+            ts_ob_no = ts_ob_no.cuda()
+            ts_q_n = ts_q_n.cuda()
         ts_v_n = self.value_nn(ts_ob_no).view(-1)
         raw_ts_v_n = ts_v_n
         # 网络的输出是(n, 1)，这里把它拉成(n, )的
@@ -197,9 +232,39 @@ class Agent(object):
 
         return ts_adv_n
 
-    def estimate_return(self, ts_ob_no, ts_re_n):
-        ts_q_n = self.monte_carlo_q(ts_re_n)
-        ts_adv_n = self.compute_advantage(ts_ob_no, ts_q_n)
+    def compute_advantage_gae(self, ts_ob_no, re_n, ts_q_n):
+        if self.gpu:
+            ts_ob_no = ts_ob_no.cuda()
+            ts_q_n = ts_q_n.cuda()
+            ts_re_n = t.cat(re_n).cuda()
+        path_lens = [len(re) for re in re_n]
+        path_end_idxs = [np.sum(path_lens[:i + 1]) for i in range(len(path_lens))]
+        ts_v_n = self.value_nn(ts_ob_no).view(-1)
+        ts_v_n = (ts_v_n - t.mean(ts_v_n)) / (t.std(ts_v_n, unbiased=False) + 1e-7)
+        ts_v_n = ts_v_n * t.std(ts_q_n, unbiased=False) + t.mean(ts_q_n)
+        path_begin_idx = 0
+        factor = self.gamma * self.lam
+        # 做一个factor的幂数组，最高次是最长len
+        # 参数parser
+        max_len = t.max(t.tensor(path_lens))
+        factor_power = t.pow(factor, t.arange(max_len).float())
+        if self.gpu:
+            factor_power = factor_power.cuda()
+        ts_adv_n_temp = ts_re_n - ts_v_n
+        ts_adv_n = t.zeros_like(ts_v_n)
+        for path_end_idx in path_end_idxs:
+            ts_adv_n_temp[path_begin_idx : path_end_idx - 1] += self.gamma * ts_v_n[path_begin_idx + 1 : path_end_idx]
+            for i in range(path_begin_idx, path_end_idx):
+                ts_adv_n[i] = t.sum(factor_power[0 : path_end_idx - i] * ts_adv_n_temp[i : path_end_idx])
+            path_begin_idx = path_end_idx
+        return ts_adv_n
+
+    def estimate_return(self, ts_ob_no, re_n):
+        ts_q_n = self.monte_carlo_q(re_n)
+        if self.gae:
+            ts_adv_n = self.compute_advantage_gae(ts_ob_no, re_n, ts_q_n)
+        else:
+            ts_adv_n = self.compute_advantage(ts_ob_no, ts_q_n)
         if self.need_normalize_adv:
             ts_adv_n = (ts_adv_n - t.mean(ts_adv_n)) / (t.std(ts_adv_n, unbiased=False) + 1e-7)
         return ts_q_n, ts_adv_n
@@ -219,6 +284,11 @@ class Agent(object):
         return ts_logprob_n
 
     def update_parameters(self, ts_ob_no, ts_ac_na, ts_adv_n, ts_q_n):
+        if self.gpu:
+            ts_ob_no = ts_ob_no.cuda()
+            ts_ac_na = ts_ac_na.cuda()
+            ts_adv_n = ts_adv_n.cuda()
+            ts_q_n = ts_q_n.cuda()
         ts_policy_out = self.policy_nn(ts_ob_no)
         ts_logprob_n = self.get_log_prob(ts_policy_out, ts_ac_na)
         
@@ -271,29 +341,29 @@ def train_pg(args, env):
         # 对于离散的情况，取样的ac的真实维度应该是ac_n，即index值，这样也不影响去计算CrossEntropy loss
         ts_ac_na = t.cat([path['ac'] for path in paths])
         # 这里reward不要连接起来，还是要保留各个路径的信息，但是最终的q_n应该是连接起来的，对应于每个ac有一个q值的估计。
-        ts_re_n = [path['reward'] for path in paths]
+        re_n = [path['reward'] for path in paths]
         with t.no_grad():
-            ts_q_n, ts_adv_n = agent.estimate_return(ts_ob_no, ts_re_n)
+            ts_q_n, ts_adv_n = agent.estimate_return(ts_ob_no, re_n)
         pseudo_policy_loss, value_loss = agent.update_parameters(ts_ob_no, ts_ac_na, ts_adv_n, ts_q_n)
         pseudo_policy_losses.append(pseudo_policy_loss)
         value_losses.append(value_loss)
         returns = [path["reward"].sum() for path in paths]
         mean_return = t.mean(t.tensor(returns))
         if not DEBUG_POLICY and not DEBUG_Q:
-            print(len(ts_re_n), len(returns))
+            print(len(re_n), len(returns))
             print('mean rewards: ', mean_return)
         # print('returns:', returns)
 
         mean_returns.append(mean_return)
         # ep_len = [len(path["reward"]) for path in paths]
         # print('mean ep_path_len', np.mean(ep_len))   
-    vis = visdom.Visdom(env=u'test1')
-    vis.line(X=t.tensor(range(args.n_iter)), Y=t.tensor(pseudo_policy_losses), \
-        win='pseudo_policy_losses', opts={'title': 'pseudo_policy_losses'})
-    vis.line(X=t.tensor(range(args.n_iter)), Y=t.tensor(value_losses), \
-        win='value_losses', opts={'title': 'value_losses'})
-    vis.line(X=t.tensor(range(args.n_iter)), Y=t.tensor(mean_returns), \
-        win='mean_returns', opts={'title': 'mean_returns'})
+    # vis = visdom.Visdom(env=u'test1')
+    # vis.line(X=t.tensor(range(args.n_iter)), Y=t.tensor(pseudo_policy_losses), \
+    #     win='pseudo_policy_losses', opts={'title': 'pseudo_policy_losses'})
+    # vis.line(X=t.tensor(range(args.n_iter)), Y=t.tensor(value_losses), \
+    #     win='value_losses', opts={'title': 'value_losses'})
+    # vis.line(X=t.tensor(range(args.n_iter)), Y=t.tensor(mean_returns), \
+    #     win='mean_returns', opts={'title': 'mean_returns'})
 
 
 def main():
@@ -315,6 +385,9 @@ def main():
     parser.add_argument('--n_experiment', '-e', type=int ,default=1)
     parser.add_argument('--n_layers', '-l', type=int, default=2)
     parser.add_argument('--hidden_shape', '-hs', type=int, default=64)
+    parser.add_argument('--gae', action='store_true')
+    parser.add_argument('--lam', type=float, default=1.)
+    parser.add_argument('--gpu', action='store_true')
     args=parser.parse_args()
     processes = []
 
