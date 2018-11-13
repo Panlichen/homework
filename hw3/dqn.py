@@ -11,6 +11,7 @@ from torch import nn, optim
 from collections import namedtuple
 from dqn_utils import LinearSchedule, ReplayBuffer, get_wrapper_by_name
 
+# 比较类似于dict，不过key都固定好了，可以通过tuple风格的下标索引，也可以通过dict风格的key索引。
 OptimizerSpec = namedtuple("OptimizerSpec", ["constructor", "kwargs", "lr_lambda"])
  
 
@@ -31,7 +32,7 @@ class QLearner(object):
     frame_history_len=4,
     target_update_freq=10000,
     grad_norm_clipping=10,
-    double_q=True,
+    double_q=False,
     lander=False):
     """Run Deep Q-learning algorithm.
 
@@ -103,6 +104,7 @@ class QLearner(object):
         in_features = self.env.observation_space.shape[0]
     else:
         img_h, img_w, img_c = self.env.observation_space.shape
+        # in_features 只设置为深度：作为convNet的in_channels
         in_features = frame_history_len * img_c
     self.num_actions = self.env.action_space.n
 
@@ -116,6 +118,7 @@ class QLearner(object):
                                                      **self.optimizer_spec.kwargs)
     self.lr_scheduler = optim.lr_scheduler.LambdaLR(self.optimizer, self.optimizer_spec.lr_lambda)
     # clip_grad_norm_fn will be called before doing gradient decent
+    # 梯度裁剪：为了防止梯度爆炸或梯度消失，当梯度越过阈值，把梯度设置为阈值；Pytorch这个接口只能防止爆炸。
     self.clip_grad_norm_fn = lambda : nn.utils.clip_grad_norm_(parameters, max_norm=grad_norm_clipping)
 
     # update_target_fn will be called periodically to copy Q network to target Q network
@@ -164,8 +167,25 @@ class QLearner(object):
         Hint: use smooth_l1_loss (a.k.a huber_loss) instead of mean squared error.
               use self.double_q to switch between double DQN and vanilla DQN.
     """
-    
-    # YOUR CODE HERE
+    ts_obs, ts_act, ts_rew, ts_next_obs, ts_done_mask = map(lambda x: torch.from_numpy(x).to(self.device), \
+          [obs, ac, rw, nxobs, done])
+
+    # 调用网络求当前状态的q值需要求梯度来更新网络参数，下边对target网络的调用或者double_q情况下调用网络不需要求梯度去更新参数。
+    # 类似于这种每行选一个数或者每行选几个数其实原生地符合gather的语义。这里是每行选一个数，所以index数组(ts_act)的shape应该为(batch_size, 1)
+    ts_act = ts_act.long().view(-1, 1)
+    ts_cur_q = self.q_net(ts_obs).gather(1, ts_act).view(-1)
+    # 认为q_net(ts_obs).shape=(batch_size, act_num), ts_act.shape=(batch_size, ), ts_cur_q.shape=(batch_size, )
+    # ts_cur_q = self.q_net(ts_obs)[torch.arange(self.batch_size).long(), ts_act.long()]
+
+    with torch.no_grad():
+      if self.double_q:
+        ts_best_act = torch.argmax(self.q_net(ts_next_obs), dim=1, keepdim=True)
+        ts_target_q = ts_rew + self.gamma * self.target_q_net(ts_next_obs).gather(1, ts_best_act).view(-1) * (1 - ts_done_mask)
+      else:
+        # torch.max会返回两个tensor，第一个max，第二个这些max值对应的index
+        ts_target_q = ts_rew + self.gamma * torch.max(self.target_q_net(ts_next_obs), dim=1)[0] * (1 - ts_done_mask)
+    ts_bellman_loss = nn.functional.smooth_l1_loss(ts_cur_q, ts_target_q)
+    return ts_bellman_loss
     
     
   def stopping_criterion_met(self):
@@ -205,6 +225,19 @@ class QLearner(object):
     #####
 
     # YOUR CODE HERE
+    replay_idx = self.replay_buffer.store_frame(self.last_obs)
+    epsilon = self.exploration.value(self.t)
+    if self.model_initialized and random.random() < 1.0 - epsilon:
+      feed_frame = torch.from_numpy(self.replay_buffer.encode_recent_observation()[None]).to(self.device)
+      q_values = self.q_net(feed_frame)
+      # Use torch.Tensor.item() to get a Python number from a tensor containing a single value，比用.numpy()更合适些
+      action = torch.argmax(q_values, dim=1)[0].item()
+    else:
+      action = self.env.action_space.sample()
+    self.last_obs, reward, done, _ = self.env.step(action)
+    self.replay_buffer.store_effect(replay_idx, action, reward, done)
+    if done:
+      self.last_obs = self.env.reset()
     
 
   def update_model(self):
@@ -217,13 +250,12 @@ class QLearner(object):
     if (self.t > self.learning_starts and \
         self.t % self.learning_freq == 0 and \
         self.replay_buffer.can_sample(self.batch_size)):
-      
       # Here, you should perform training. Training consists of four steps:
       # 3.a: use the replay buffer to sample a batch of transitions (see the
       # replay buffer code for function definition, each batch that you sample
       # should consist of current observations, current actions, rewards,
       # next observations, and done indicator).
-      # 3.b: set the self.model_initialized to True. Because the newwork in starting
+      # 3.b: set the self.model_initialized to True. Because the network is starting
       # to train, and you will use it to take action in self.step_env.
       # 3.c: train the model. To do this, you'll need to use the self.optimizer and
       # self.calc_loss that were created earlier: self.calc_loss is what you
@@ -237,11 +269,22 @@ class QLearner(object):
       # variable self.num_param_updates useful for this (it was initialized to 0)
       #####
       
-      # YOUR CODE HERE
+      obs, ac, rw, nxobs, done = self.replay_buffer.sample(self.batch_size)
       
+      if not self.model_initialized:
+        self.model_initialized = True
+      
+      ts_loss = self.calc_loss(obs, ac, rw, nxobs, done)
+
+      self.optimizer.zero_grad()
+      ts_loss.backward()
+      self.clip_grad_norm_fn()
+      self.optimizer.step()
 
       self.num_param_updates += 1
-
+      if self.num_param_updates % self.target_update_freq == 0:
+        self.update_target_fn()
+    #所以在step那里不需要给self.t加1
     self.t += 1
 
   def log_progress(self):
@@ -265,6 +308,10 @@ class QLearner(object):
       logz.save_pytorch_model(self.q_net)
       
 def learn(*args, **kwargs):
+  # *args表示任何多个无名参数，它本质是一个tuple；**kwargs表示关键字参数，它本质上是一个dict； 
+  # 这里的输出结果里args为空，参数全在kwargs里。
+  # print('args = ', args)
+  # print('kwargs = ', kwargs)
   alg = QLearner(*args, **kwargs)
   while not alg.stopping_criterion_met():
     alg.step_env()

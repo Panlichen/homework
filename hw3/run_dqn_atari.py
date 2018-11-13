@@ -33,6 +33,8 @@ class DQN(nn.Module): # for atari
         self.classifier = nn.Sequential(
             nn.Linear(in_features=7 * 7 * 64, out_features=512),
             nn.ReLU(True),
+            # Atari环境下动作都是离散的，这里拟合Q值的思路不是把state和action一起输入，最后输出一个值作为拟合的Q值，而是
+            # state作输入，输出num_action个Q值，作为不同动作的Q值，显然这样设计无法应用到连续动作空间中。
             nn.Linear(in_features=512, out_features=num_actions),
         )
 
@@ -40,6 +42,10 @@ class DQN(nn.Module): # for atari
 
     def forward(self, obs):
         out = obs.float() / 255 # convert 8-bits RGB color to float in [0, 1]
+        # permute：将tensor的维度换位。
+        # ob_shape:
+        #   self.observation_space = spaces.Box(low=0, high=255, shape=(screen_height, screen_width, 3), dtype=np.uint8)
+        # frames：把多个最近的frame当做一个observation
         out = out.permute(0, 3, 1, 2) # reshape to [batch_size, img_c * frames, img_h, img_w]
         out = self.convnet(out)
         out = out.view(out.size(0), -1) # flatten feature maps to a big vector
@@ -52,6 +58,7 @@ def atari_learn(env,
     num_iterations = float(num_timesteps) / 4.0
 
     lr_multiplier = 1.0
+    # 根据训练的轮数动态调整lr
     lr_schedule = PiecewiseSchedule(
         [
             (0,                   1e-4 * lr_multiplier),
@@ -71,6 +78,7 @@ def atari_learn(env,
     def stopping_criterion(env, t):
         # notice that here t is the number of steps of the wrapped env,
         # which is different from the number of steps in the underlying env
+        # 可能就是从wrapper中抽一层，不过这些wrapper中有些把4步当1步。
         return get_wrapper_by_name(env, "Monitor").get_total_steps() >= num_timesteps
 
     exploration_schedule = PiecewiseSchedule(
@@ -123,6 +131,7 @@ def get_env(env_name, exp_name, seed):
 
     expt_dir = '/tmp/hw3_vid_dir2/'
     env = wrappers.Monitor(env, osp.join(expt_dir, "gym"), force=True)
+    # 加了10000层wrapper。。估计自己之后写环境也需要这样来方便调试吧。
     env = wrap_deepmind(env)
 
     return env

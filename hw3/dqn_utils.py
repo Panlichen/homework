@@ -153,6 +153,7 @@ class ReplayBuffer(object):
         return batch_size + 1 <= self.num_in_buffer
 
     def _encode_sample(self, idxes):
+        # None的作用是在最前边加一个1维，在这个问题里作用是加上batch那一维。
         obs_batch      = np.concatenate([self._encode_observation(idx)[None] for idx in idxes], 0)
         act_batch      = self.action[idxes]
         rew_batch      = self.reward[idxes]
@@ -200,7 +201,9 @@ class ReplayBuffer(object):
         return self._encode_sample(idxes)
 
     def encode_recent_observation(self):
-        """Return the most recent `frame_history_len` frames.
+        """
+        这个函数做的就是把多个frame在channel那一维拼接起来。“变得更厚”，对于图像数据来说比较自然。
+        Return the most recent `frame_history_len` frames.
 
         Returns
         -------
@@ -232,6 +235,10 @@ class ReplayBuffer(object):
             frames = [np.zeros_like(self.obs[0]) for _ in range(missing_context)]
             for idx in range(start_idx, end_idx):
                 frames.append(self.obs[idx % self.size])
+            # frames.shape = frame_history_len * h * w * c
+            # concatenate后，shape变成h * w * (c * frame_history_len)
+            # concatenate本来应该传多个list或者array进去，这里只传了一个，自动理解为是frame_history_len个h * w * c的array，
+            # 它的第2维就成了c那一维，于是就拼接成了一个h * w * (c * frame_history_len)的array
             return np.concatenate(frames, 2)
         else:
             # this optimization has potential to saves about 30% compute time \o/
@@ -253,7 +260,9 @@ class ReplayBuffer(object):
         idx: int
             Index at which the frame is stored. To be used for `store_effect` later.
         """
+        # self.size是这个ReplayBuffer的最大size
         if self.obs is None:
+            # self.obs的维度是size*h*w*c
             self.obs      = np.empty([self.size] + list(frame.shape), dtype=np.float32 if self.lander else np.uint8)
             self.action   = np.empty([self.size],                     dtype=np.int32)
             self.reward   = np.empty([self.size],                     dtype=np.float32)

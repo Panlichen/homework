@@ -79,6 +79,7 @@ class MaxAndSkipEnv(gym.Wrapper):
         """Return only every `skip`-th frame"""
         super(MaxAndSkipEnv, self).__init__(env)
         # most recent raw observations (for max pooling across time steps)
+        # deque：双向队列，append超限之后自动弹出最左端的值。
         self._obs_buffer = deque(maxlen=2)
         self._skip       = skip
 
@@ -87,6 +88,7 @@ class MaxAndSkipEnv(gym.Wrapper):
         done = None
         for _ in range(self._skip):
             obs, reward, done, info = self.env.step(action)
+            # 不懂为什么这里的_obs_buffer一直不重置。
             self._obs_buffer.append(obs)
             total_reward += reward
             if done:
@@ -139,11 +141,16 @@ def wrap_deepmind_ram(env):
 
 def wrap_deepmind(env):
     assert 'NoFrameskip' in env.spec.id
+    # 似乎是重新定义“done”的语义，在atari游戏中，要考虑还有几条命。
+    # 前两个wrapper不改变action、observation
     env = EpisodicLifeEnv(env)
     env = NoopResetEnv(env, noop_max=30)
+    # 这个wrapper的作用是连续执行skip步，返回obs为最大的*一*帧(是从上次reset到现在最大的一帧)，reward为skip步reward的总和。
     env = MaxAndSkipEnv(env, skip=4)
     if 'FIRE' in env.unwrapped.get_action_meanings():
         env = FireResetEnv(env)
+    # 相当于一个ObservationWrapper
     env = ProcessFrame84(env)
+    # 把reward根据符号变成1.0, 0, -1.0
     env = ClippedRewardsWrapper(env)
     return env
